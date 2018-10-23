@@ -1,0 +1,5 @@
+statistics(walltime, [TimeSinceStart | [TimeSinceLastCall]]),astar(S),statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]), write(S), nl.
+
+statistics(walltime, [TimeSinceStart | [TimeSinceLastCall]]),ida(S),statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]), write(S), nl.
+
+statistics(walltime, [TimeSinceStart | [TimeSinceLastCall]]),iterativeDeeping(S),statistics(walltime, [NewTimeSinceStart | [ExecutionTime]]),write(S), nl.
