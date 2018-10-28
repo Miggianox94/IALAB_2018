@@ -1,0 +1,10 @@
+3 squadre: 0.032s (Solving: 0.01s 1st Model: 0.01s Unsat: 0.00s)
+8 squadre: 89.094s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+15 squadre: non terminato nemmeno dopo 5 ore
+
+2 aereoporti,1merci,1aerei,maxlevel 5: Time         : 0.008s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+2 aereoporti,2merci,2aerei,maxlevel 5: Time         : 0.012s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+4 aereoporti,4merci,2aerei,maxlevel 5: Time         : 0.031s (Solving: 0.00s 1st Model: 0.00s Unsat: 0.00s)
+8 aereoporti,8merci,2aerei,maxlevel 7: Time         : 2.856s (Solving: 2.70s 1st Model: 2.70s Unsat: 0.00s)
+
+

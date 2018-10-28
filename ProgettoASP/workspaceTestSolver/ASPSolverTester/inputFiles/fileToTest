@@ -1,0 +1,1 @@
+match(salernoTeam,romaTeam1,salerno,2) match(romaTeam1,salernoTeam,roma,1) match(salernoTeam,arezzoTeam1,salerno,3) match(romaTeam1,arezzoTeam1,roma,4) match(arezzoTeam1,salernoTeam,arezzo,5) match(arezzoTeam1,romaTeam1,arezzo,6)

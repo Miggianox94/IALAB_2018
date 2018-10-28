@@ -10,14 +10,14 @@
 %		trasferta.
 
 
-#const numteam=8.
+#const numteam=15.
 
 giornata(1..numteam*(numteam-1)).
 
 % ###### ESEMPIO CON 8 SQUADRE
 
- squadra(arezzoTeam1;romaTeam1;salernoTeam;torinoTeam;milanoTeam;arezzoTeam2;romaTeam2).
- citta(arezzo;roma;salerno;torino;milano).
+%* squadra(arezzoTeam1;romaTeam1;salernoTeam;torinoTeam;milanoTeam;arezzoTeam2;romaTeam2;veneziaTeam).
+ citta(arezzo;roma;salerno;torino;milano;venezia).
  squadraLocation(arezzoTeam1,arezzo).
  squadraLocation(romaTeam1,roma).
  squadraLocation(salernoTeam,salerno).
@@ -25,32 +25,56 @@ giornata(1..numteam*(numteam-1)).
  squadraLocation(milanoTeam,milano).
  squadraLocation(arezzoTeam2,arezzo).
  squadraLocation(romaTeam2,roma).
+ squadraLocation(veneziaTeam,venezia).
+*%
+
+% ###### ESEMPIO CON 15 SQUADRE
+
+ squadra(arezzoTeam1;romaTeam1;salernoTeam;torinoTeam;milanoTeam;arezzoTeam2;romaTeam2;veneziaTeam;cuneoTeam;genovaTeam;grossetoTeam;firenzeTeam;andriaTeam;lecceTeam;foggiaTeam).
+ citta(arezzo;roma;salerno;torino;milano;venezia;cuneo;genova;grosseto;firenze;andria;lecce;foggia).
+ squadraLocation(arezzoTeam1,arezzo).
+ squadraLocation(romaTeam1,roma).
+ squadraLocation(salernoTeam,salerno).
+ squadraLocation(torinoTeam,torino).
+ squadraLocation(milanoTeam,milano).
+ squadraLocation(arezzoTeam2,arezzo).
+ squadraLocation(romaTeam2,roma).
+ squadraLocation(veneziaTeam,venezia).
+ squadraLocation(cuneoTeam,cuneo).
+ squadraLocation(genovaTeam,genova).
+ squadraLocation(grossetoTeam,grosseto).
+ squadraLocation(firenzeTeam,firenze).
+ squadraLocation(andriaTeam,andria).
+ squadraLocation(lecceTeam,lecce).
+ squadraLocation(foggiaTeam,foggia).
+ 
 
 
 % ###### ESEMPIO CON 2 SQUADRE
 
-% squadra(arezzoTeam1;romaTeam1).
-% citta(arezzo;roma).
-% squadraLocation(arezzoTeam1,arezzo).
-% squadraLocation(romaTeam1,roma).
-
+%* squadra(arezzoTeam1;romaTeam1).
+ citta(arezzo;roma).
+ squadraLocation(arezzoTeam1,arezzo).
+ squadraLocation(romaTeam1,roma).
+*%
 
 % ###### ESEMPIO CON 3 SQUADRE
-
-% squadra(arezzoTeam1;romaTeam1;salernoTeam).
-% citta(arezzo;roma;salerno).
-% squadraLocation(arezzoTeam1,arezzo).
-% squadraLocation(romaTeam1,roma).
-% squadraLocation(salernoTeam,salerno).
-
+%*
+ squadra(arezzoTeam1;romaTeam1;salernoTeam).
+ citta(arezzo;roma;salerno).
+ squadraLocation(arezzoTeam1,arezzo).
+ squadraLocation(romaTeam1,roma).
+ squadraLocation(salernoTeam,salerno).
+*%
+ 
 % ###### ESEMPIO CON 3 SQUADRE STESSA CITTA
-
-% squadra(arezzoTeam1;romaTeam1;arezzoTeam2).
-% citta(arezzo;roma).
-% squadraLocation(arezzoTeam1,arezzo).
-% squadraLocation(romaTeam1,roma).
-% squadraLocation(arezzoTeam2,arezzo).
-
+%*
+ squadra(arezzoTeam1;romaTeam1;arezzoTeam2).
+ citta(arezzo;roma).
+ squadraLocation(arezzoTeam1,arezzo).
+ squadraLocation(romaTeam1,roma).
+ squadraLocation(arezzoTeam2,arezzo).
+*%
 
 
 % In ogni giornata ci deve essere una sola partita
