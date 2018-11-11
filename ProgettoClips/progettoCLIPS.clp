@@ -175,7 +175,9 @@ deftemplate presenteInCitta
 	(assert (delete (+ ?livello 1) ?fCost))
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
+
 
 ;aggiunge una unità di merce B dalla citta dove si trova il mezzo dentro il mezzo
 (defrule EXPAND::loadB
@@ -195,6 +197,7 @@ deftemplate presenteInCitta
 	(assert (delete (+ ?livello 1) ?fCost))
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
 
 ;aggiunge una unità di merce C dalla citta dove si trova il mezzo dentro il mezzo
@@ -215,6 +218,7 @@ deftemplate presenteInCitta
 	(assert (delete (+ ?livello 1) ?fCost))
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
 
 ;rimuove una unità di merce A dal mezzo e la deposita nella città dove si trova
@@ -234,6 +238,7 @@ deftemplate presenteInCitta
 	(assert (delete (+ ?livello 1) ?fCost))
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
 
 ;rimuove una unità di merce B dal mezzo e la deposita nella città dove si trova
@@ -253,6 +258,7 @@ deftemplate presenteInCitta
 	(assert (delete (+ ?livello 1) ?fCost))
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
 
 ;rimuove una unità di merce C dal mezzo e la deposita nella città dove si trova
@@ -272,6 +278,7 @@ deftemplate presenteInCitta
 	(assert (delete (+ ?livello 1) ?fCost))
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
 
 ;muove il mezzo da una citta ad un'altra
@@ -293,5 +300,6 @@ deftemplate presenteInCitta
 	(assert (costoTotal (+ ?livello 1) (+ ?costoAttuale 50))) ;50 fake. TODO
 	(assert (current ?livello))
     (assert (news (+ ?livello 1)))
+	(assert (apply ?livello))
 )
 

@@ -26,9 +26,9 @@
 (defrule stampaSol
 	(declare (salience 101))
 	?f<-(stampa ?n)
-	(exec ?n ?k ?a ?b) ;TODO: sostiuire exec
+	;(exec ?n ?k ?a ?b) ;TODO: sostiuire exec --> capire come stampare i passi
 	=> 
-	(printout t " PASSO: "?n " " ?k " " ?a " " ?b crlf)
+	;(printout t " PASSO: "?n " " ?k " " ?a " " ?b crlf)
 	(assert (stampa (- ?n 1)))
 	(retract ?f)
 )
@@ -104,7 +104,8 @@
 
 ;queste regole vengono controllate ogni volta che viene asserito apply. Notare salience
 (defrule backtrack-0 (declare (salience 10))
-	?f<- (apply ?s ? ? ?)
+	;?f<- (apply ?s ? ? ?)
+	?f<- (apply ?s)
    	(maxdepth (max ?d))
    	(test (>= ?s ?d))
 => 
@@ -112,7 +113,8 @@
 )
 
 (defrule backtrack-posizioneMezzo (declare (salience 10))
-	(apply ?s ? ? ?)
+	;?f<- (apply ?s ? ? ?)
+	?f<- (apply ?s)
 	(not (current ?))
 	?f1 <-	(posizioneMezzo (livello ?t&:(> ?t ?s)))
 	=> 	
@@ -120,7 +122,8 @@
 )
 
 (defrule backtrack-presenteInCitta (declare (salience 10))
-	(apply ?s ? ? ?)
+	;?f<- (apply ?s ? ? ?)
+	?f<- (apply ?s)
 	(not (current ?))
 	?f1 <-	(presenteInCitta (livello ?t&:(> ?t ?s)))
 	=> 	
@@ -128,18 +131,19 @@
 )
 
 (defrule backtrack-in (declare (salience 10))
-	(apply ?s ? ? ?)
+	;?f<- (apply ?s ? ? ?)
+	?f<- (apply ?s)
 	(not (current ?))
 	?f1 <-	(in (livello ?t&:(> ?t ?s)))
 	=> 	
 	(retract ?f1)
 )
 
-(defrule backtrack-2 (declare (salience 10))
-	(apply ?s ? ? ?)
-	(not (current ?))
-?f2 <-	(exec ?t&:(>= ?t ?s) ? ? ?)
-=> 	(retract ?f2))
+;(defrule backtrack-2 (declare (salience 10)) TODO: CAPIRE SE VA BENE TOGLIERE STA REGOLA
+;	(apply ?s ? ? ?)
+;	(not (current ?))
+;	?f2 <-	(exec ?t&:(>= ?t ?s) ? ? ?)
+;=> 	(retract ?f2))
 
 
 (defrule pass-to-check (declare (salience 25))
@@ -314,18 +318,20 @@
 )
 
 (defrule del4
-(declare (salience 10))
-?f1 <- (remove newstate)
-?f2 <- (news ?n)
-=> (retract ?f1)
-   (retract ?f2))
+	(declare (salience 10))
+	?f1 <- (remove newstate)
+	?f2 <- (news ?n)
+	=> (retract ?f1)
+	   (retract ?f2)
+)
 
 (defrule done
- ?f <- (current ?x) => 
-(retract ?f)
-(pop-focus)
-(pop-focus)
-(pop-focus)
+	 ?f <- (current ?x) 
+	 => 
+	(retract ?f)
+	(pop-focus)
+	(pop-focus)
+	(pop-focus)
 )
 
 
