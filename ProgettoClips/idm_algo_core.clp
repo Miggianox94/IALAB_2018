@@ -89,12 +89,13 @@
 ;MA 1) questo è un adattamento di un codice pensato per essere unico
 ;2) i fatti ordinati sono più immediati (non richiedono slot)
 (defrule dummy-rule (declare (salience 2))
-       ?f1 <- (delete -1 op obj obj)
+       ?f1 <- (delete $?)
        ?f2 <- (news -1)
-       ?f3 <- (goal atom obj obj)
-       ?f4 <- (status -1 atom obj obj)
+       ;?f3 <- (goal atom obj obj)
+       ;?f4 <- (status -1 atom obj obj)
 =>
-	(retract ?f1 ?f2 ?f3 ?f4)
+	;(retract ?f1 ?f2 ?f3 ?f4)
+	(retract ?f1 ?f2)
 )
 
 
@@ -114,16 +115,16 @@
 
 (defrule backtrack-posizioneMezzo (declare (salience 10))
 	;?f<- (apply ?s ? ? ?)
-	?f<- (apply ?s)
+	(apply ?s)
 	(not (current ?))
-	?f1 <-	(posizioneMezzo (livello ?t&:(> ?t ?s)))
+	?f1<-(posizioneMezzo (livello ?t&:(> ?t ?s)))
 	=> 	
 	(retract ?f1)
 )
 
 (defrule backtrack-presenteInCitta (declare (salience 10))
 	;?f<- (apply ?s ? ? ?)
-	?f<- (apply ?s)
+	(apply ?s)
 	(not (current ?))
 	?f1 <-	(presenteInCitta (livello ?t&:(> ?t ?s)))
 	=> 	
@@ -132,7 +133,7 @@
 
 (defrule backtrack-in (declare (salience 10))
 	;?f<- (apply ?s ? ? ?)
-	?f<- (apply ?s)
+	(apply ?s)
 	(not (current ?))
 	?f1 <-	(in (livello ?t&:(> ?t ?s)))
 	=> 	

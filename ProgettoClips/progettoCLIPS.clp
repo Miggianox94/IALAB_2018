@@ -1,5 +1,5 @@
 (deftemplate mezzo
-	(slot name (type STRING))
+	(slot name (type LEXEME))
 	(slot tipo (allowed-values furgone aereo nave))
 	(slot capacita (type NUMBER))
 	(slot unitaDisponibili (type NUMBER)) ;sarà sempre uguale per tutte le istanze di un certo tipo
@@ -7,37 +7,37 @@
 
 (deftemplate posizioneMezzo
 	(slot livello (type NUMBER) (default 0))
-	(slot name (type STRING))
-	(slot posizione (type STRING))
+	(slot name (type LEXEME))
+	(slot posizione (type LEXEME))
 )
 
 (deftemplate citta
-	(slot name (type STRING))
-	(slot produceTipo (type STRING))
+	(slot name (type LEXEME))
+	(slot produceTipo (type LEXEME))
 	(slot produceQty (type NUMBER))
 	(slot consumaQtyA (type NUMBER) (default 0))
 	(slot consumaQtyB (type NUMBER) (default 0))
 	(slot consumaQtyC (type NUMBER) (default 0))
 )
 
-deftemplate presenteInCitta
+(deftemplate presenteInCitta
 	(slot livello (type NUMBER) (default 0))
-	(slot nomeCitta (type STRING))
+	(slot nomeCitta (type LEXEME))
 	(slot presenteInCittaQtyA (type NUMBER) (default 0))
 	(slot presenteInCittaQtyB (type NUMBER) (default 0))
 	(slot presenteInCittaQtyC (type NUMBER) (default 0))
 )
 
 (deftemplate collegamento
-	(slot citta1 (type STRING))
-	(slot citta2 (type STRING))
-	(slot tipo (allowed-values furgone aereo nave) (default terra))
+	(slot citta1 (type LEXEME))
+	(slot citta2 (type LEXEME))
+	(slot tipo (allowed-values furgone aereo nave) (default furgone))
 	(slot distanza (type NUMBER))
 )
 
 (deftemplate in
 	(slot livello (type NUMBER) (default 0))
-	(slot nomeMezzo (type STRING))
+	(slot nomeMezzo (type LEXEME))
 	(slot quantityA (type NUMBER) (default 0))
 	(slot quantityB (type NUMBER) (default 0))
 	(slot quantityC (type NUMBER) (default 0))
