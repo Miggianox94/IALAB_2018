@@ -160,32 +160,38 @@
 
 (defrule persistency-posizioneMezzo
     (declare (salience 100))
-    (current ?s)
+    (current ?level)
     ;(status ?s ?op ?x ?y)
 	(posizioneMezzo (livello ?level) (name ?nameMezzo) (posizione ?position))
-    (not (delete (posizioneMezzo (livello ?t&:(eq ?t (+ ?level 1))) (name ?nameMezzo) (posizione ?position))))
+    (not 
+		(delete ?t&:(eq ?t (+ ?level 1)) ?f)
+	)
+	;(test (= (+ ?level 1) ?v))
+	?f <- (posizioneMezzo (name ?nameMezzo) (posizione ?position))
 	=> 
-	(posizioneMezzo (livello (+ ?level 1)) (name ?nameMezzo) (posizione ?position))
+	(assert (posizioneMezzo (livello (+ ?level 1)) (name ?nameMezzo) (posizione ?position)))
 )
 	
 (defrule persistency-presenteInCitta
     (declare (salience 100))
-    (current ?s)
+    (current ?level)
     ;(status ?s ?op ?x ?y)
 	(presenteInCitta (livello ?level) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
-    (not (delete (presenteInCitta (livello ?t&:(eq ?t (+ ?level 1))) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
+    (not (delete ?t&:(eq ?t (+ ?level 1)) ?f))
+	?f <-(presenteInCitta  (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
 	=> 
-	(presenteInCitta (livello (+ ?level 1)) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
+	(assert (presenteInCitta (livello (+ ?level 1)) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC)))
 )
 
 (defrule persistency-in
     (declare (salience 100))
-    (current ?s)
+    (current ?level)
     ;(status ?s ?op ?x ?y)
 	(in (livello ?level) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
-    (not (delete (in (livello ?t&:(eq ?t (+ ?level 1))) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC)))
+    (not (delete ?t&:(eq ?t (+ ?level 1)) ?f))
+	?f <- (in (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
 	=> 
-	(in (livello (+ ?level 1)) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
+	(assert (livello (+ ?level 1)) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
 )
 
 (defrule goal-not-yet
@@ -219,7 +225,7 @@
     ;(status ?s ?op ?x ?y)
 	(posizioneMezzo (livello ?s) (name ?mezzo) (posizione ?posizione))
     ;(not (status ?a ?op ?x ?y)) 
-	(posizioneMezzo (livello ?a) (name ?mezzo) (posizione ?posizione))
+	(not (posizioneMezzo (livello ?a) (name ?mezzo) (posizione ?posizione)))
     =>
     (assert (ancestor (- ?a 1)))
     (retract ?f1)
@@ -235,7 +241,7 @@
     ;(status ?s ?op ?x ?y)
 	(presenteInCitta (livello ?s) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
     ;(not (status ?a ?op ?x ?y)) 
-	(presenteInCitta (livello ?a) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
+	(not (presenteInCitta (livello ?a) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC)))
     =>
     (assert (ancestor (- ?a 1)))
     (retract ?f1)
@@ -250,7 +256,7 @@
     ;(status ?s ?op ?x ?y)
 	(in (livello ?s) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
     ;(not (status ?a ?op ?x ?y)) 
-	(in (livello ?a) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
+	(not (in (livello ?a) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC)))
     =>
     (assert (ancestor (- ?a 1)))
     (retract ?f1)
