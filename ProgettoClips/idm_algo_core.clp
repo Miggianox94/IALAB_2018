@@ -113,11 +113,11 @@
 	(retract ?f)
 )
 
-(defrule backtrack-posizioneMezzo (declare (salience 10))
+(defrule backtrack-posizioneMezzo (declare (salience 10));TODO FORSE CONVIENE UTILIZZARE MAXDEPTH QUI?
 	;?f<- (apply ?s ? ? ?)
 	(apply ?s)
 	(not (current ?))
-	?f1<-(posizioneMezzo (livello ?t&:(> ?t ?s)))
+	?f1<-(posizioneMezzo (livello ?t&:(> ?t (+ ?s 1))))
 	=> 	
 	(retract ?f1)
 )
@@ -126,7 +126,7 @@
 	;?f<- (apply ?s ? ? ?)
 	(apply ?s)
 	(not (current ?))
-	?f1 <-	(presenteInCitta (livello ?t&:(> ?t ?s)))
+	?f1 <-	(presenteInCitta (livello ?t&:(> ?t (+ ?s 1))))
 	=> 	
 	(retract ?f1)
 )
@@ -135,7 +135,7 @@
 	;?f<- (apply ?s ? ? ?)
 	(apply ?s)
 	(not (current ?))
-	?f1 <-	(in (livello ?t&:(> ?t ?s)))
+	?f1 <-	(in (livello ?t&:(> ?t (+ ?s 1))))
 	=> 	
 	(retract ?f1)
 )
