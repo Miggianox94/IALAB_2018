@@ -1,54 +1,68 @@
 ;*************************************MODULO MAIN
 (defmodule MAIN (export ?ALL))
 
-(deftemplate solution 
-	(slot value (default no))
-)
  
 (deftemplate maxdepth 
 	(slot max)
 )
 
 (deffacts parameters
-       (solution (value no)) 
        (maxdepth (max 0))
+	   (livelloCorrente 0)
 )
 
-;---serve per stampare la soluzione
-(defrule got-solution
-	(declare (salience 100))
-	(solution (value yes)) 
-	(maxdepth (max ?n))
-        => 
-	(assert (stampa (- ?n 1)))
+
+(defrule gotSolution
+	(declare (salience 1))
+	(goalRaised)
+	=>
+	(printout t "SOLUZIONE TROVATA, BLOCCO L'ESECUZIONE" crlf)
+	(assert (printSolution))
 )
 
-(defrule stampaSol
-	(declare (salience 101))
-	?f<-(stampa ?n)
-	;(exec ?n ?k ?a ?b) ;TODO: sostiuire exec --> capire come stampare i passi
-	=> 
-	;(printout t " PASSO: "?n " " ?k " " ?a " " ?b crlf)
-	(assert (stampa (- ?n 1)))
-	(retract ?f)
-)
-
-(defrule stampaSol0
-	(declare (salience 102))
-	(stampa -1)
-	=> 
+(defrule printSolutionFinish
+	(declare (salience 11))
+	(printSolution)
+	(livelloCorrente -1)
+	=>
 	(halt)
 )
-;--------
 
+(defrule printSolutionRule
+	(declare (salience 10))
+	(printSolution)
+	?lev <-(livelloCorrente ?currentLevel)
+	(printableAction ?currentLevel ?tempStr)
+	=>
+	(printout t " Passo al livello " ?currentLevel ":" ?tempStr crlf)
+	(retract ?lev)
+	(assert (livelloCorrente (- ?currentLevel 1)))
+)
+
+(defrule backtrack
+	(livelloCorrente ?currentLevel)
+	(not (goalRaised))
+	(test (> ?currentLevel 0))
+	=>
+	(assert (retractIn))
+	(assert (retractPresenteCitta))
+	(assert (retractCostoTotal))
+	(assert (retractPosizioneMezzo))
+	;(assert (passToExpand))
+	(assert (retractDeleteIn))
+	(assert (retractDeletePresenteCitta))
+	(assert (retractDeletePosizioneMezzo))
+	(assert (retractPrintableActions))
+	
+	(assert (passToCheck))
+	
+	(assert (backtracked)) ;mi serve in EXPAND per diminuire il currentLevel
+	(focus EXPAND)
+)
 
 (defrule no-solution 
-	(declare (salience -1))
-	(solution (value no))
-	;(goal ?op ?x ?y) ;TODO: sostituire goal
-	;(not (status 0 ?op ?x ?y)) ;TODO: sostuire status
 	(not (goalRaised))
-	?f <-  (maxdepth (max ?d))
+	(maxdepth (max ?d))
 	=> 
 	(reset)
     (assert (resetted ?d))
@@ -57,45 +71,31 @@
 (defrule resetted
 	?f <- (resetted ?d)
 	?m <- (maxdepth (max ?))
+	?lev <- (livelloCorrente ?currentLevel)
 	=>
     (modify ?m (max (+ ?d 1))) 					;AUMENTO LA MAX DEPTH
+	(retract ?lev)
+	(assert (livelloCorrente 0))				;resetto il livello corrente
     (printout t " fail with Maxdepth:" ?d crlf)
     (focus EXPAND)
     (retract ?f)
 )
 
-(defrule s0Sol 
-	(declare (salience -2))
-	?f<-(solution (value no))
-	=>
-    (printout t " PASSO: 0 do nothing" crlf)
-    (modify ?f (value yes))
+;non serve a niente. Solo per non far andare in errore di compilazione import/export conflict
+(defrule dummy-rule (declare (salience 2))
+       ?f1 <- (delete -1 op obj obj)
+	   ?f2 <- (effettuataAzione $?)
+=>
+	(retract ?f1 ?f2)
 )
 
-
-;(defrule no-solution (declare (salience -1))
-;  (solution (value no))
-;  (maxdepth (max ?d))
-; => 
-;  (reset)
-;  (assert (resetted ?d))
-;)
-
-;questa regola non ha un compito attivo
-;serve solo per consentire a CLIPS di creare dei
-;template per i fatti ordinati di supporto
-;Sarebbe meglio evitare regole di questo tipo
-;usando fatti non ordinati anche i per i fatti di supporto
-;MA 1) questo è un adattamento di un codice pensato per essere unico
-;2) i fatti ordinati sono più immediati (non richiedono slot)
-(defrule dummy-rule (declare (salience 2))
-       ?f1 <- (delete $?)
-       ?f2 <- (news -1)
-       ;?f3 <- (goal atom obj obj)
-       ;?f4 <- (status -1 atom obj obj)
-=>
-	;(retract ?f1 ?f2 ?f3 ?f4)
-	(retract ?f1 ?f2)
+(defrule cleanEffettuataAzione
+	(declare (salience 10))
+	(livelloCorrente ?currentLevel)
+	?effAz<- (effettuataAzione ?currentLevel $?)
+	=>
+	(printout ?*debug-print* "cleanEffettuataAzione| effettuataAzione " ?currentLevel crlf)
+	(retract ?effAz)
 )
 
 
@@ -103,242 +103,213 @@
 
 (defmodule EXPAND (import MAIN ?ALL) (export ?ALL))
 
-;queste regole vengono controllate ogni volta che viene asserito apply. Notare salience
-(defrule backtrack-0 (declare (salience 10))
-	;?f<- (apply ?s ? ? ?)
-	?f<- (apply ?s)
-   	(maxdepth (max ?d))
-   	(test (>= ?s ?d))
-=> 
-	(retract ?f)
-)
-
-(defrule backtrack-posizioneMezzo (declare (salience 10));TODO FORSE CONVIENE UTILIZZARE MAXDEPTH QUI?
-	;?f<- (apply ?s ? ? ?)
-	(apply ?s)
-	(not (current ?))
-	?f1<-(posizioneMezzo (livello ?t&:(> ?t (+ ?s 1))))
-	=> 	
-	(retract ?f1)
-)
-
-(defrule backtrack-presenteInCitta (declare (salience 10))
-	;?f<- (apply ?s ? ? ?)
-	(apply ?s)
-	(not (current ?))
-	?f1 <-	(presenteInCitta (livello ?t&:(> ?t (+ ?s 1))))
-	=> 	
-	(retract ?f1)
-)
-
-(defrule backtrack-in (declare (salience 10))
-	;?f<- (apply ?s ? ? ?)
-	(apply ?s)
-	(not (current ?))
-	?f1 <-	(in (livello ?t&:(> ?t (+ ?s 1))))
-	=> 	
-	(retract ?f1)
-)
-
-;(defrule backtrack-2 (declare (salience 10)) TODO: CAPIRE SE VA BENE TOGLIERE STA REGOLA
-;	(apply ?s ? ? ?)
-;	(not (current ?))
-;	?f2 <-	(exec ?t&:(>= ?t ?s) ? ? ?)
-;=> 	(retract ?f2))
-
-
-(defrule pass-to-check (declare (salience 25))
-	(current ?s)
-=>
+(defrule passToCheck
+	(declare (salience 10))
+	?pass<- (passToCheck)
+	?lev <- (livelloCorrente ?currentLevel)
+	=>
+	(retract ?pass)
+	(assert (livelloCorrente (- ?currentLevel 1)))
+	(retract ?lev)
+	(printout ?*debug-print* "passToCheck| currentLevel " ?currentLevel crlf)
 	(focus CHECK)
 )
 
+(defrule backTracked
+	(declare (salience 9))
+	?back<- (backtracked)
+	=>
+	(printout ?*debug-print* "backTracked"  crlf)
+	(retract ?back)
+)
+	
 
 ;*************************************MODULO CHECK
-
 (defmodule CHECK (import EXPAND ?ALL) (export ?ALL))
 
+;mi serve per aumentare il livello al quale sto lavorando
+(defrule increaseLevel
+	(not (goalRaised))
+	?lev<- (livelloCorrente ?currentLevel)
+	(effettuataAzione ?currentLevel)
+	=>
+	(retract ?lev)
+	(assert (livelloCorrente (+ ?currentLevel 1)))
+	(printout ?*debug-print* "increaseLevel| currentLevel " ?currentLevel crlf)
+	(assert (checkLevel))
+)
+
+;controlla se ho sforato la profondità massima. Se si porta al retract dei nuovi facts e ritorna al currentLevel precedente
+(defrule checkLevel
+	?check<- (checkLevel)
+	?currLev<- (livelloCorrente ?currentLevel)
+	(maxdepth (max ?maxDepth))
+	(test(> ?currentLevel ?maxDepth))
+	?currAct<- (effettuataAzione ?t&:(eq ?t (- ?currentLevel 1)))
+	=>
+	(retract ?check)
+	(retract ?currLev)
+	(retract ?currAct)
+	
+	(assert (retractIn))
+	(assert (retractPresenteCitta))
+	(assert (retractCostoTotal))
+	(assert (retractPosizioneMezzo))
+	(assert (livelloCorrente (- ?currentLevel 1)))
+	(assert (passToExpand))
+	(assert (retractDeleteIn))
+	(assert (retractDeletePresenteCitta))
+	(assert (retractDeletePosizioneMezzo))
+	
+	(printout ?*debug-print* "checkLevel| currentLevel " ?currentLevel "maxDepth " ?maxDepth crlf)
+	(assert (retractPrintableActions))
+)
+
+;in questo caso il livello non sfora
+(defrule checkLevelOk
+	(declare (salience -2))
+	?check<- (checkLevel)
+	(livelloCorrente ?currentLevel)
+	?currAct<- (effettuataAzione ?t&:(eq ?t (- ?currentLevel 1)))
+	=>
+	(retract ?check)
+	(retract ?currAct)
+	(printout ?*debug-print* "checkLevelOk| currentLevel " ?currentLevel crlf)
+	(focus PERSIST)
+)
+
+		;#####  REGOLE PER RETRACT #####
+
+		
+(defrule retractPrintableActionsRule
+	(retractPrintableActions)
+	(livelloCorrente ?currentLevel)
+	?printFact<- (printableAction ?t&:(> ?t ?currentLevel) $?)
+	=>
+	(retract ?printFact)
+	(printout ?*debug-print* "retractPrintableActionsRule| currentLevel " ?currentLevel crlf)
+)		
+
+		
+(defrule retractDeleteInRule
+	(retractDeleteIn)
+	(livelloCorrente ?currentLevel)
+	?delInFact<- (delete ?t&:(eq ?t (+ ?currentLevel 1)) in $?)
+	=>
+	(retract ?delInFact)
+	(printout ?*debug-print* "retractDeleteInRule| currentLevel " ?currentLevel crlf)
+)
+
+(defrule retractDeletePresenteCittaRule
+	(retractDeletePresenteCitta)
+	(livelloCorrente ?currentLevel)
+	?delPresenteCittaFact<- (delete ?t&:(eq ?t (+ ?currentLevel 1)) presenteInCitta $?)
+	=>
+	(retract ?delPresenteCittaFact)
+	(printout ?*debug-print* "retractDeletePresenteCittaRule| currentLevel " ?currentLevel crlf)
+)	
+
+(defrule retractDeletePosizioneMezzo
+	(retractDeletePosizioneMezzo)
+	(livelloCorrente ?currentLevel)
+	?delPosizioneMezzoFact<- (delete ?t&:(eq ?t (+ ?currentLevel 1)) posizioneMezzo $?)
+	=>
+	(retract ?delPosizioneMezzoFact)
+	(printout ?*debug-print* "retractDeletePosizioneMezzo| currentLevel " ?currentLevel crlf)
+)			
+		
+(defrule retractInRule
+	(retractIn)
+	(livelloCorrente ?currentLevel)
+	?inFact<- (in (livello ?t&:(eq ?t (+ ?currentLevel 1))))
+	=>
+	(retract ?inFact)
+	(printout ?*debug-print* "retractInRule| currentLevel " ?currentLevel crlf)
+)
+	
+(defrule retractPresenteCittaRule
+	(retractPresenteCitta)
+	(livelloCorrente ?currentLevel)
+	?presenteCittaFact<- (presenteInCitta (livello ?t&:(eq ?t (+ ?currentLevel 1))))
+	=>
+	(retract ?presenteCittaFact)
+	(printout ?*debug-print* "retractPresenteCittaRule| currentLevel " ?currentLevel crlf)
+)
+
+(defrule retractCostoTotalRule
+	(retractCostoTotal)
+	(livelloCorrente ?currentLevel)
+	?costoTotalFact<- (costoTotal ?t&:(eq ?t (+ ?currentLevel 1)) ?)
+	=>
+	(retract ?costoTotalFact)
+	(printout ?*debug-print* "retractCostoTotalRule| currentLevel " ?currentLevel crlf)
+)
+
+(defrule retractPosizioneMezzoRule
+	(retractPosizioneMezzo)
+	(livelloCorrente ?currentLevel)
+	?posizioneMezzoFact<- (posizioneMezzo (livello ?t&:(eq ?t (+ ?currentLevel 1))))
+	=>
+	(retract ?posizioneMezzoFact)
+	(printout ?*debug-print* "retractPosizioneMezzoRule| currentLevel " ?currentLevel crlf)
+)
+
+(defrule allRetracted
+	(declare (salience -1)) ;salience -1 perchè deve essere fatto dopo il retract di tutti
+	?passExp<- (passToExpand)
+	?ret1<- (retractPresenteCitta)
+	?ret2<- (retractCostoTotal)
+	?ret3<- (retractPosizioneMezzo)
+	?ret4<- (retractIn)
+	?ret5<- (retractPrintableActions)
+	?ret6<- (retractDeleteIn)
+	?ret7<- (retractDeletePresenteCitta)
+	?ret8<- (retractDeletePosizioneMezzo)
+	;?currLev<- (livelloCorrente ?currentLevel)
+	=>
+	(retract ?ret1 ?ret2 ?ret3 ?ret4 ?ret5 ?ret6 ?ret7 ?ret8 ?passExp)
+	(printout ?*debug-print* "allRetracted|" crlf)
+	;(assert (livelloCorrente (- ?currentLevel 1))) ;in modo tale che l'esecuzione riparta dal livello precedente (se ci sono ancora azioni applicabili)
+	;(focus EXPAND)
+)
+		;###############################
+
+
+;*************************************MODULO PERSIST
+
+(defmodule PERSIST (import EXPAND ?ALL) (export ?ALL))
+
 (defrule persistency-posizioneMezzo
-    (declare (salience 100))
-    (current ?level)
-    ;(status ?s ?op ?x ?y)
-	(posizioneMezzo (livello ?level) (name ?nameMezzo) (posizione ?position))
-    (not 
-		(delete ?t&:(eq ?t (+ ?level 1)) ?f)
-	)
-	;(test (= (+ ?level 1) ?v))
-	?f <- (posizioneMezzo (name ?nameMezzo) (posizione ?position))
+    (livelloCorrente ?level)
+	(posizioneMezzo (livello ?t&:(eq ?t (- ?level 1))) (name ?nameMezzo) (posizione ?position))
+	(not (delete ?level posizioneMezzo ?t&:(eq ?t (- ?level 1)) ?nameMezzo))
 	=> 
-	(assert (posizioneMezzo (livello (+ ?level 1)) (name ?nameMezzo) (posizione ?position)))
+	(assert (posizioneMezzo (livello ?level) (name ?nameMezzo) (posizione ?position)))
+	(printout ?*debug-print* "persistency-posizioneMezzo| currentLevel: " ?level " nameMezzo: " ?nameMezzo crlf)
 )
 	
 (defrule persistency-presenteInCitta
-    (declare (salience 100))
-    (current ?level)
-    ;(status ?s ?op ?x ?y)
-	(presenteInCitta (livello ?level) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
-    (not (delete ?t&:(eq ?t (+ ?level 1)) ?f))
-	?f <-(presenteInCitta  (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
+    (livelloCorrente ?level)
+	(presenteInCitta (livello ?t&:(eq ?t (- ?level 1))) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
+	(not (delete ?level presenteInCitta ?t&:(eq ?t (- ?level 1)) ?nomeCitta))
 	=> 
-	(assert (presenteInCitta (livello (+ ?level 1)) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC)))
+	(assert (presenteInCitta (livello ?level) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC)))
+	(printout ?*debug-print* "persistency-presenteInCitta| currentLevel: " ?level " nomeCitta: " ?nomeCitta crlf)
 )
 
 (defrule persistency-in
-    (declare (salience 100))
-    (current ?level)
-    ;(status ?s ?op ?x ?y)
-	(in (livello ?level) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
-    (not (delete ?t&:(eq ?t (+ ?level 1)) ?f))
-	?f <- (in (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
+    (livelloCorrente ?level)
+	(in (livello ?t&:(eq ?t (- ?level 1))) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
+	(not (delete ?level in ?t&:(eq ?t (- ?level 1)) ?nameMezzo))
 	=> 
-	(assert (livello (+ ?level 1)) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
+	(assert (in (livello ?level) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC)))
+	(printout ?*debug-print* "persistency-in| currentLevel: " ?level " nomeMezzo: " ?nameMezzo crlf)
 )
 
-(defrule goal-not-yet
-      (declare (salience 50))
-      (news ?s)
-      ;(goal ?op ?x ?y)
-      ;(not (status ?s ?op ?x ?y))
-	  (not (goalRaised))
-      => (assert (task go-on)) 
-         (assert (ancestor (- ?s 1)))
-         (focus NEW))
-
-(defrule solution-exist
- ?f <-  (solution (value no))
-         => 
-        (modify ?f (value yes))
-        (pop-focus)
-        (pop-focus)
-)
-
-;*************************************MODULO NEW
-
-(defmodule NEW  (import CHECK ?ALL) (export ?ALL))
-
-
-(defrule check-ancestor-posizioneMezzo
-    (declare (salience 50))
-	?f1 <- (ancestor ?a) 
-    (or (test (> ?a 0)) (test (= ?a 0)))
-    (news ?s)
-    ;(status ?s ?op ?x ?y)
-	(posizioneMezzo (livello ?s) (name ?mezzo) (posizione ?posizione))
-    ;(not (status ?a ?op ?x ?y)) 
-	(not (posizioneMezzo (livello ?a) (name ?mezzo) (posizione ?posizione)))
-    =>
-    (assert (ancestor (- ?a 1)))
-    (retract ?f1)
-    (assert (diff ?a))
-)
-
-
-(defrule check-ancestor-presenteInCitta
-    (declare (salience 50))
-	?f1 <- (ancestor ?a) 
-    (or (test (> ?a 0)) (test (= ?a 0)))
-    (news ?s)
-    ;(status ?s ?op ?x ?y)
-	(presenteInCitta (livello ?s) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC))
-    ;(not (status ?a ?op ?x ?y)) 
-	(not (presenteInCitta (livello ?a) (nomeCitta ?nomeCitta) (presenteInCittaQtyA ?qtyA) (presenteInCittaQtyB ?qtyB) (presenteInCittaQtyC ?qtyC)))
-    =>
-    (assert (ancestor (- ?a 1)))
-    (retract ?f1)
-    (assert (diff ?a))
-)
-
-(defrule check-ancestor-in
-    (declare (salience 50))
-	?f1 <- (ancestor ?a) 
-    (or (test (> ?a 0)) (test (= ?a 0)))
-    (news ?s)
-    ;(status ?s ?op ?x ?y)
-	(in (livello ?s) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC))
-    ;(not (status ?a ?op ?x ?y)) 
-	(not (in (livello ?a) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC ?qtyC)))
-    =>
-    (assert (ancestor (- ?a 1)))
-    (retract ?f1)
-    (assert (diff ?a))
-)
-
-(defrule all-checked
-       (declare (salience 25))
-       (diff 0) 
-?f2 <- (news ?n)
-?f3 <- (task go-on) 
-=>
-       (retract ?f2)
-       (retract ?f3)
-       (focus DEL))
-
-(defrule already-exist
-?f <- (task go-on)
-      => 
-	(retract ?f)
-    (assert (remove newstate))
-    (focus DEL))
-
-
-;*************************************MODULO DEL		
-		
-(defmodule DEL (import NEW ?ALL))          
-       
-(defrule del1
-	(declare (salience 50))
-	?f <- (delete $?)
-	=> (retract ?f)
-)
-
-(defrule del2
-	(declare (salience 100))
-	?f <- (diff ?)
-	=> (retract ?f)
-)
-
-(defrule del3-posizioneMezzo
-	(declare (salience 25))
-    (remove newstate)
-    (news ?n)
-	?f <- (posizioneMezzo (livello ?n))
-	=> 
-	(retract ?f)
-)
-
-(defrule del3-presenteInCitta
-	(declare (salience 25))
-    (remove newstate)
-    (news ?n)
-	?f <- (presenteInCitta (livello ?n))
-	=> 
-	(retract ?f)
-)
-
-(defrule del3-in
-	(declare (salience 25))
-    (remove newstate)
-    (news ?n)
-	?f <- (in (livello ?n))
-	=> 
-	(retract ?f)
-)
-
-(defrule del4
-	(declare (salience 10))
-	?f1 <- (remove newstate)
-	?f2 <- (news ?n)
-	=> (retract ?f1)
-	   (retract ?f2)
-)
-
-(defrule done
-	 ?f <- (current ?x) 
-	 => 
-	(retract ?f)
-	(pop-focus)
-	(pop-focus)
-	(pop-focus)
-)
-
-
+;questa viene chiamata dopo che le persist sono state tutte fatte
+;(defrule passToExpandFromPersist
+;	(declare (salience -1))
+;	(livelloCorrente ?)
+;	=>
+;	(focus EXPAND)
+;)

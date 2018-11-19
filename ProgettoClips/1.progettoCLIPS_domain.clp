@@ -1,3 +1,6 @@
+(defglobal ?*debug-print* = nil);mettere a t oppure a nil
+
+
 (deftemplate mezzo
 	(slot name (type LEXEME))
 	(slot tipo (allowed-values furgone aereo nave))
