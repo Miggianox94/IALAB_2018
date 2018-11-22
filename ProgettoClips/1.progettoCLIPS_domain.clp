@@ -1,4 +1,4 @@
-(defglobal ?*debug-print* = nil);mettere a t oppure a nil
+(defglobal ?*debug-print* = t);mettere a t oppure a nil
 
 
 (deftemplate mezzo
@@ -49,8 +49,60 @@
 
 ;;######################################## STATO INIZIALE
 
+
+
+;------ESEMPIO SEMPLICE
+
+;(deffacts mezzi
+;	(mezzo (name Furgone1) (tipo furgone) (capacita 4) (unitaDisponibili 5))
+;	(posizioneMezzo (livello 0) (name Furgone1) (posizione TO))
+;)
+
+;(deffacts mezziIn
+;	(in (nomeMezzo Furgone1))
+;)
+
+
+;(deffacts citta
+;	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
+;	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
+;	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1))
+;	(citta (name TO) (produceTipo B) (produceQty 10))
+;)
+
+;(deffacts collegamenti
+;	(collegamento (citta1 TO) (citta2 MI) (tipo furgone) (distanza 138))
+;)
+
+
+;-----ESEMPIO INTERMEDIO
+
 (deffacts mezzi
 	(mezzo (name Furgone1) (tipo furgone) (capacita 4) (unitaDisponibili 5))
+	(posizioneMezzo (livello 0) (name Furgone1) (posizione TO))
+)
+
+(deffacts mezziIn
+	(in (nomeMezzo Furgone1))
+)
+
+
+(deffacts citta
+	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
+	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
+	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1))
+	(citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyC 5))
+)
+
+(deffacts collegamenti
+	(collegamento (citta1 TO) (citta2 MI) (tipo furgone) (distanza 138))
+)
+
+
+;------ESEMPIO ESERCIZIO
+
+;(deffacts mezzi
+;	(mezzo (name Furgone1) (tipo furgone) (capacita 4) (unitaDisponibili 5))
 ;	(mezzo (name Furgone2) (tipo furgone) (capacita 4) (unitaDisponibili 5))
 ;	(mezzo (name Furgone3) (tipo furgone) (capacita 4) (unitaDisponibili 5))
 ;	(mezzo (name Furgone4) (tipo furgone) (capacita 4) (unitaDisponibili 5))
@@ -68,12 +120,12 @@
 ;	(posizioneMezzo (livello 0) (name Aereo2) (posizione PA))
 ;	(posizioneMezzo (livello 0) (name Nave1) (posizione GE))
 ;	(posizioneMezzo (livello 0) (name Nave2) (posizione VE))
-
-	(posizioneMezzo (livello 0) (name Furgone1) (posizione TO)) ;questa è alternativa a (posizioneMezzo (livello 0) (name Furgone1) (posizione BO))
-)
-
-(deffacts mezziIn
-	(in (nomeMezzo Furgone1))
+;
+;	(posizioneMezzo (livello 0) (name Furgone1) (posizione TO)) ;questa è alternativa a (posizioneMezzo (livello 0) (name Furgone1) (posizione BO))
+;)
+;
+;(deffacts mezziIn
+;	(in (nomeMezzo Furgone1))
 ;	(in (nomeMezzo Furgone2))
 ;	(in (nomeMezzo Furgone3))
 ;	(in (nomeMezzo Furgone4))
@@ -82,10 +134,10 @@
 ;	(in (nomeMezzo Aereo2))
 ;	(in (nomeMezzo Nave1))
 ;	(in (nomeMezzo Nave2))
-)
-
-
-(deffacts citta
+;)
+;
+;
+;(deffacts citta
 ;	(citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyA 20))
 ;	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyA 30))
 ;	(citta (name VE) (produceTipo C) (produceQty 10) (consumaQtyB 5))
@@ -96,8 +148,8 @@
 ;	(citta (name BA) (produceTipo A) (produceQty 10) (consumaQtyB 5))
 ;	(citta (name RC) (produceTipo A) (produceQty 20) (consumaQtyB 5))
 ;	(citta (name PA) (produceTipo A) (produceQty 10) (consumaQtyB 5))
-	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
-	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
+;	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
+;	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
 ;	(presenteInCitta (livello 0) (nomeCitta VE) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 10))
 ;	(presenteInCitta (livello 0) (nomeCitta GE) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 10))
 ;	(presenteInCitta (livello 0) (nomeCitta BO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
@@ -106,13 +158,13 @@
 ;	(presenteInCitta (livello 0) (nomeCitta BA) (presenteInCittaQtyA 10) (presenteInCittaQtyB 0) (presenteInCittaQtyC 0))
 ;	(presenteInCitta (livello 0) (nomeCitta RC) (presenteInCittaQtyA 20) (presenteInCittaQtyB 0) (presenteInCittaQtyC 0))
 ;	(presenteInCitta (livello 0) (nomeCitta PA) (presenteInCittaQtyA 10) (presenteInCittaQtyB 0) (presenteInCittaQtyC 0))
-
-	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1)) ;alternativa alla seconda (citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyA 30))
-	(citta (name TO) (produceTipo B) (produceQty 10)) ;alternativa alla prima (citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyA 20))
-)
-
-(deffacts collegamenti
-	(collegamento (citta1 TO) (citta2 MI) (tipo furgone) (distanza 138))
+;
+;	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1)) ;alternativa alla seconda (citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyA 30))
+;	(citta (name TO) (produceTipo B) (produceQty 10)) ;alternativa alla prima (citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyA 20))
+;)
+;
+;(deffacts collegamenti
+;	(collegamento (citta1 TO) (citta2 MI) (tipo furgone) (distanza 138))
 ;	(collegamento (citta1 TO) (citta2 GE) (tipo furgone) (distanza 170))
 ;	(collegamento (citta1 MI) (citta2 VE) (tipo furgone) (distanza 276))
 ;	(collegamento (citta1 MI) (citta2 BO) (tipo furgone) (distanza 206))
@@ -130,7 +182,9 @@
 ;	(collegamento (citta1 MI) (citta2 NA) (tipo aereo) (distanza 764))
 ;	(collegamento (citta1 TO) (citta2 RM) (tipo aereo) (distanza 669))
 ;	(collegamento (citta1 TO) (citta2 PA) (tipo aereo) (distanza 1596))
-)
+;)
+
+;;###########COSTO INIZIALE
 
 (deffacts costoIniziale
 	(costoTotal 0 0)

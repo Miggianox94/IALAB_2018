@@ -53,6 +53,7 @@
 	(assert (retractDeletePresenteCitta))
 	(assert (retractDeletePosizioneMezzo))
 	(assert (retractPrintableActions))
+	(assert (retractDeleteCostoTotal))
 	
 	(assert (passToCheck))
 	
@@ -160,6 +161,7 @@
 	(assert (retractDeleteIn))
 	(assert (retractDeletePresenteCitta))
 	(assert (retractDeletePosizioneMezzo))
+	(assert (retractDeleteCostoTotal))
 	
 	(printout ?*debug-print* "checkLevel| currentLevel " ?currentLevel "maxDepth " ?maxDepth crlf)
 	(assert (retractPrintableActions))
@@ -216,7 +218,17 @@
 	=>
 	(retract ?delPosizioneMezzoFact)
 	(printout ?*debug-print* "retractDeletePosizioneMezzo| currentLevel " ?currentLevel crlf)
-)			
+)		
+
+
+(defrule retractDeleteCostoTotal
+	(retractDeleteCostoTotal)
+	(livelloCorrente ?currentLevel)
+	?delCostoTotal<- (delete ?t&:(eq ?t (+ ?currentLevel 1)) costoTotal $?)
+	=>
+	(retract ?delCostoTotal)
+	(printout ?*debug-print* "retractDeleteCostoTotal| currentLevel " ?currentLevel crlf)
+)		
 		
 (defrule retractInRule
 	(retractIn)
@@ -265,9 +277,10 @@
 	?ret6<- (retractDeleteIn)
 	?ret7<- (retractDeletePresenteCitta)
 	?ret8<- (retractDeletePosizioneMezzo)
+	?ret9<- (retractDeleteCostoTotal)
 	;?currLev<- (livelloCorrente ?currentLevel)
 	=>
-	(retract ?ret1 ?ret2 ?ret3 ?ret4 ?ret5 ?ret6 ?ret7 ?ret8 ?passExp)
+	(retract ?ret1 ?ret2 ?ret3 ?ret4 ?ret5 ?ret6 ?ret7 ?ret8 ?ret9 ?passExp)
 	(printout ?*debug-print* "allRetracted|" crlf)
 	;(assert (livelloCorrente (- ?currentLevel 1))) ;in modo tale che l'esecuzione riparta dal livello precedente (se ci sono ancora azioni applicabili)
 	;(focus EXPAND)
