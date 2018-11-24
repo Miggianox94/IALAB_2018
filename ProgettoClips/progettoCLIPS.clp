@@ -68,6 +68,7 @@
 	(bind ?tempStr (str-cat "Load A in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
@@ -99,6 +100,7 @@
 	(bind ?tempStr (str-cat "Load B in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	(focus CHECK)
 
 )
@@ -127,8 +129,10 @@
     (assert (effettuataAzione ?livello loadC))
 	(assert (effettuataAzione ?livello))
 	
-	(bind ?tempStr (str-cat "Load A in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
+	(bind ?tempStr (str-cat "Load C in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
+	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	
 	(focus CHECK)
 )
@@ -159,6 +163,7 @@
 	(bind ?tempStr (str-cat "Unload A in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
@@ -188,6 +193,7 @@
 	(bind ?tempStr (str-cat "Unload B in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	(focus CHECK)
 
 )
@@ -219,6 +225,7 @@
 	(bind ?tempStr (str-cat "Unload C in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
@@ -251,6 +258,7 @@
 	(bind ?tempStr (str-cat "Move to: mezzo " ?nameMezzo " from " ?posizioneAttuale " to " ?cittaDestinazione))
 	(assert (printableAction ?livello ?tempStr))
 	
+	(printout ?*debug-print* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 

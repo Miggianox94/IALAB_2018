@@ -1,4 +1,4 @@
-(defglobal ?*debug-print* = t);mettere a t oppure a nil
+(defglobal ?*debug-print* = nil);mettere a t oppure a nil
 
 
 (deftemplate mezzo
@@ -57,25 +57,49 @@
 ;	(mezzo (name Furgone1) (tipo furgone) (capacita 4) (unitaDisponibili 5))
 ;	(posizioneMezzo (livello 0) (name Furgone1) (posizione TO))
 ;)
-
+;
 ;(deffacts mezziIn
 ;	(in (nomeMezzo Furgone1))
 ;)
-
-
+;
+;
 ;(deffacts citta
 ;	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
 ;	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
 ;	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1))
 ;	(citta (name TO) (produceTipo B) (produceQty 10))
 ;)
-
+;
 ;(deffacts collegamenti
 ;	(collegamento (citta1 TO) (citta2 MI) (tipo furgone) (distanza 138))
 ;)
 
 
 ;-----ESEMPIO INTERMEDIO
+
+;(deffacts mezzi
+;	(mezzo (name Furgone1) (tipo furgone) (capacita 4) (unitaDisponibili 5))
+;	(posizioneMezzo (livello 0) (name Furgone1) (posizione TO))
+;)
+;
+;(deffacts mezziIn
+;	(in (nomeMezzo Furgone1))
+;)
+;
+;
+;(deffacts citta
+;	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
+;	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
+;	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1))
+;	(citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyC 1))
+;)
+;
+;(deffacts collegamenti
+;	(collegamento (citta1 TO) (citta2 MI) (tipo furgone) (distanza 138))
+;)
+
+
+;-----ESEMPIO INTERMEDIO_2
 
 (deffacts mezzi
 	(mezzo (name Furgone1) (tipo furgone) (capacita 4) (unitaDisponibili 5))
@@ -91,7 +115,7 @@
 	(presenteInCitta (livello 0) (nomeCitta TO) (presenteInCittaQtyA 0) (presenteInCittaQtyB 10) (presenteInCittaQtyC 0))
 	(presenteInCitta (livello 0) (nomeCitta MI) (presenteInCittaQtyA 0) (presenteInCittaQtyB 0) (presenteInCittaQtyC 5))
 	(citta (name MI) (produceTipo C) (produceQty 5) (consumaQtyB 1))
-	(citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyC 5))
+	(citta (name TO) (produceTipo B) (produceQty 10) (consumaQtyC 4))
 )
 
 (deffacts collegamenti

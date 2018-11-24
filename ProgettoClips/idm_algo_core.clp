@@ -48,7 +48,6 @@
 	(assert (retractPresenteCitta))
 	(assert (retractCostoTotal))
 	(assert (retractPosizioneMezzo))
-	;(assert (passToExpand))
 	(assert (retractDeleteIn))
 	(assert (retractDeletePresenteCitta))
 	(assert (retractDeletePosizioneMezzo))
@@ -56,8 +55,9 @@
 	(assert (retractDeleteCostoTotal))
 	
 	(assert (passToCheck))
+	(assert (passToExpand)) ;mi serve per attivare allRetracted in CHECK
 	
-	(assert (backtracked)) ;mi serve in EXPAND per diminuire il currentLevel
+	(assert (backtracked)) ;mi serve in EXPAND
 	(focus EXPAND)
 )
 
@@ -77,7 +77,7 @@
     (modify ?m (max (+ ?d 1))) 					;AUMENTO LA MAX DEPTH
 	(retract ?lev)
 	(assert (livelloCorrente 0))				;resetto il livello corrente
-    (printout t " fail with Maxdepth:" ?d crlf)
+    (printout t "************************************************* fail with Maxdepth:" ?d crlf)
     (focus EXPAND)
     (retract ?f)
 )
@@ -85,11 +85,12 @@
 ;non serve a niente. Solo per non far andare in errore di compilazione import/export conflict
 (defrule dummy-rule (declare (salience 2))
        ?f1 <- (delete -1 op obj obj)
-	   ?f2 <- (effettuataAzione $?)
+	   ?f2 <- (effettuataAzione  -1 $?)
 =>
 	(retract ?f1 ?f2)
 )
 
+;effettuataAzione serve per non far ripetere le stesse azioni nello stesso livello all'infinito
 (defrule cleanEffettuataAzione
 	(declare (salience 10))
 	(livelloCorrente ?currentLevel)
@@ -119,9 +120,33 @@
 (defrule backTracked
 	(declare (salience 9))
 	?back<- (backtracked)
+	(livelloCorrente ?currentLevel)
+	;?currAct<- (effettuataAzione ?currentLevel $?)
 	=>
-	(printout ?*debug-print* "backTracked"  crlf)
+	(printout ?*debug-print* "-------------------backTracked"  crlf)
 	(retract ?back)
+	;(retract ?currAct)
+	(assert (popExpand)) ;questo mi serve perchè altrimenti non arriva mai a noSolution del MAIN
+)
+
+(defrule popExpand
+	(declare (salience 20))
+	?popFact <- (popExpand)
+	(livelloCorrente ?currentLevel)
+	(test (eq ?currentLevel 0))
+	=>
+	(retract ?popFact)
+	(pop-focus)
+)
+
+(defrule popExpandRetract
+	(declare (salience 19))
+	?popFact <- (popExpand)
+	(livelloCorrente ?currentLevel)
+	(test (> ?currentLevel 0))
+	=>
+	(retract ?popFact)
+	;in questo caso non faccio il pop-focus
 )
 	
 
@@ -157,11 +182,12 @@
 	(assert (retractCostoTotal))
 	(assert (retractPosizioneMezzo))
 	(assert (livelloCorrente (- ?currentLevel 1)))
-	(assert (passToExpand))
 	(assert (retractDeleteIn))
 	(assert (retractDeletePresenteCitta))
 	(assert (retractDeletePosizioneMezzo))
 	(assert (retractDeleteCostoTotal))
+	
+	(assert (passToExpand))
 	
 	(printout ?*debug-print* "checkLevel| currentLevel " ?currentLevel "maxDepth " ?maxDepth crlf)
 	(assert (retractPrintableActions))
@@ -186,7 +212,7 @@
 (defrule retractPrintableActionsRule
 	(retractPrintableActions)
 	(livelloCorrente ?currentLevel)
-	?printFact<- (printableAction ?t&:(> ?t ?currentLevel) $?)
+	?printFact<- (printableAction ?currentLevel $?)
 	=>
 	(retract ?printFact)
 	(printout ?*debug-print* "retractPrintableActionsRule| currentLevel " ?currentLevel crlf)
