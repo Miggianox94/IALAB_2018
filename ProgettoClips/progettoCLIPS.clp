@@ -45,7 +45,9 @@
 (defrule EXPAND::loadA
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello loadA))
+	;(not (effettuataAzione ?livello loadA ?nameMezzo ?posizioneAttuale))
+	
+	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello loadA ?nameMezzo ?posizioneAttuale)))
 	
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -62,13 +64,13 @@
 	(assert (delete (+ ?livello 1) in ?livello ?nameMezzo)) 
 	(assert (delete (+ ?livello 1) presenteInCitta ?livello ?posizioneAttuale))
 	
-    (assert (effettuataAzione ?livello loadA))
+    (assert (effettuataAzione ?livello loadA ?nameMezzo ?posizioneAttuale))
 	(assert (effettuataAzione ?livello))
 	
 	(bind ?tempStr (str-cat "Load A in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
@@ -77,7 +79,9 @@
 (defrule EXPAND::loadB
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello loadB))
+	;(not (effettuataAzione ?livello loadB ?nameMezzo ?posizioneAttuale))
+	
+	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello loadB ?nameMezzo ?posizioneAttuale)))
 	
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -94,13 +98,13 @@
 	(assert (delete (+ ?livello 1) in ?livello ?nameMezzo))
 	(assert (delete (+ ?livello 1) presenteInCitta ?livello ?posizioneAttuale))
 
-    (assert (effettuataAzione ?livello loadB))
+    (assert (effettuataAzione ?livello loadB ?nameMezzo ?posizioneAttuale))
 	(assert (effettuataAzione ?livello))
 	
 	(bind ?tempStr (str-cat "Load B in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	(focus CHECK)
 
 )
@@ -109,7 +113,9 @@
 (defrule EXPAND::loadC
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello loadC))
+	;(not (effettuataAzione ?livello loadC ?nameMezzo ?posizioneAttuale))
+	
+	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello loadC ?nameMezzo ?posizioneAttuale)))
 
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -126,13 +132,13 @@
 	(assert (delete (+ ?livello 1) in ?livello ?nameMezzo))
 	(assert (delete (+ ?livello 1) presenteInCitta ?livello ?posizioneAttuale))
 
-    (assert (effettuataAzione ?livello loadC))
+    (assert (effettuataAzione ?livello loadC ?nameMezzo ?posizioneAttuale))
 	(assert (effettuataAzione ?livello))
 	
 	(bind ?tempStr (str-cat "Load C in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	
 	(focus CHECK)
 )
@@ -141,7 +147,9 @@
 (defrule EXPAND::unloadA
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello unloadA))
+	;(not (effettuataAzione ?livello unloadA ?nameMezzo ?posizioneAttuale))
+	
+	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello unloadA ?nameMezzo ?posizioneAttuale)))
 	
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -157,13 +165,13 @@
 	(assert (delete (+ ?livello 1) in ?livello ?nameMezzo)) 
 	(assert (delete (+ ?livello 1) presenteInCitta ?livello ?posizioneAttuale))
 	
-	(assert (effettuataAzione ?livello unloadA))
+	(assert (effettuataAzione ?livello unloadA ?nameMezzo ?posizioneAttuale))
 	(assert (effettuataAzione ?livello))
 	
 	(bind ?tempStr (str-cat "Unload A in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
@@ -171,7 +179,9 @@
 (defrule EXPAND::unloadB
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello unloadB))
+	;(not (effettuataAzione ?livello unloadB ?nameMezzo ?posizioneAttuale))
+	
+	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello unloadB ?nameMezzo ?posizioneAttuale)));questo per far si che provi su tutti i mezzi
 	
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -187,13 +197,13 @@
 	(assert (delete (+ ?livello 1) in ?livello ?nameMezzo)) 
 	(assert (delete (+ ?livello 1) presenteInCitta ?livello ?posizioneAttuale))
 
-	(assert (effettuataAzione ?livello unloadB))
+	(assert (effettuataAzione ?livello unloadB ?nameMezzo ?posizioneAttuale))
 	(assert (effettuataAzione ?livello))
 	
 	(bind ?tempStr (str-cat "Unload B in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	(focus CHECK)
 
 )
@@ -202,7 +212,9 @@
 (defrule EXPAND::unloadC
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello unloadC))
+	;(not (effettuataAzione ?livello unloadC ?nameMezzo ?posizioneAttuale))
+	
+	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello unloadC ?nameMezzo ?posizioneAttuale)));questo per far si che provi su tutti i mezzi
 	
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -219,13 +231,13 @@
 	(assert (delete (+ ?livello 1) presenteInCitta ?livello ?posizioneAttuale))
 	(assert (delete (+ ?livello 1) costoTotal ?livello ?costoAttuale))
 
-	(assert (effettuataAzione ?livello unloadC))
+	(assert (effettuataAzione ?livello unloadC ?nameMezzo ?posizioneAttuale))
 	(assert (effettuataAzione ?livello))
 	
 	(bind ?tempStr (str-cat "Unload C in mezzo " ?nameMezzo " in city " ?posizioneAttuale))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
@@ -233,10 +245,11 @@
 (defrule EXPAND::moveTo
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
-	(not (effettuataAzione ?livello moveTo ?posizioneAttuale ?cittaDestinazione ?nameMezzo))
+	(mezzo (name ?nameMezzo) (tipo ?tipoMezzo))
+
+	(exists (mezzo (name ?nameMezzo) (tipo ?tipoMezzo)) (not (effettuataAzione ?livello moveTo ?posizioneAttuale ?cittaDestinazione ?nameMezzo)));questo per far si che provi su tutti i mezzi
 	
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
-	(mezzo (name ?nameMezzo) (tipo ?tipoMezzo))
 	(citta (name ?cittaDestinazione))
 	(or
 		(collegamento (citta1 ?posizioneAttuale) (citta2 ?cittaDestinazione) (tipo ?tipoMezzo) (distanza ?distanzaKm))
@@ -258,7 +271,7 @@
 	(bind ?tempStr (str-cat "Move to: mezzo " ?nameMezzo " from " ?posizioneAttuale " to " ?cittaDestinazione))
 	(assert (printableAction ?livello ?tempStr))
 	
-	(printout ?*debug-print* ?livello ?tempStr crlf)
+	(printout ?*debug-print-action* ?livello ?tempStr crlf)
 	(focus CHECK)
 )
 
