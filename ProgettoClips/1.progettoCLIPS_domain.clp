@@ -130,6 +130,14 @@
 
 (deffacts mezziIn
 	(in (nomeMezzo Furgone1))
+	(in (nomeMezzo Furgone2))
+	(in (nomeMezzo Furgone3))
+	(in (nomeMezzo Furgone4))
+	(in (nomeMezzo Furgone5))
+	(in (nomeMezzo Aereo1))
+	(in (nomeMezzo Aereo2))
+	(in (nomeMezzo Nave1))
+	(in (nomeMezzo Nave2))
 )
 
 

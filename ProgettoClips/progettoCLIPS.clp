@@ -81,7 +81,10 @@
 	(not (effettuataAzione ?livello))
 	;(not (effettuataAzione ?livello loadB ?nameMezzo ?posizioneAttuale))
 	
-	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello loadB ?nameMezzo ?posizioneAttuale)))
+	(exists 
+		(mezzo (name ?nameMezzo)) 
+		(not (effettuataAzione ?livello loadB ?nameMezzo ?posizioneAttuale))
+	)
 	
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -114,8 +117,6 @@
 	(livelloCorrente ?livello)
 	(not (effettuataAzione ?livello))
 	;(not (effettuataAzione ?livello loadC ?nameMezzo ?posizioneAttuale))
-	
-	(exists (mezzo (name ?nameMezzo)) (not (effettuataAzione ?livello loadC ?nameMezzo ?posizioneAttuale)))
 
 	(mezzo (name ?nameMezzo) (capacita ?capacita))
 	(posizioneMezzo (livello ?livello) (name ?nameMezzo) (posizione ?posizioneAttuale))
@@ -124,6 +125,11 @@
 	(presenteInCitta (livello ?livello) (nomeCitta ?posizioneAttuale) (presenteInCittaQtyA ?qtyPresenteCittaA) (presenteInCittaQtyB ?qtyPresenteCittaB) (presenteInCittaQtyC ?qtyPresenteCittaC))
 	(test (> ?qtyPresenteCittaC 0))
 	(costoTotal ?livello ?costoAttuale)
+	
+	(exists 
+		(mezzo (name ?nameMezzo)) 
+		(not (effettuataAzione ?livello loadC ?nameMezzo ?posizioneAttuale))
+	)
 	=>
 	(assert (in (livello (+ ?livello 1)) (nomeMezzo ?nameMezzo) (quantityA ?qtyA) (quantityB ?qtyB) (quantityC (+ ?qtyC 1))))
 	(assert (presenteInCitta (livello (+ ?livello 1)) (nomeCitta ?posizioneAttuale) (presenteInCittaQtyA ?qtyPresenteCittaA) (presenteInCittaQtyB ?qtyPresenteCittaB) (presenteInCittaQtyC (- ?qtyPresenteCittaC 1))))
